@@ -1,42 +1,38 @@
 import tkinter as tk
+from tkinter import messagebox
 import random
-from tkinter import Button, Entry, Label, StringVar
 
-win = tk.Tk()
-win.geometry("750x750")
-win.title("PythonGeeks")
 
-guess = StringVar()
-hint = StringVar()
-final_score = StringVar()
-
-Entry(win, textvariable=guess, width=3, font=('Ubuntu', 50), relief=tk.GROOVE).place(relx=0.5, rely=0.3, anchor=tk.CENTER)
-Entry(win, textvariable=hint, width=50, font=('Courier', 24), relief=tk.GROOVE, bg='orange').place(relx=0.5, rely=0.7, anchor=tk.CENTER)
-Entry(win, text=final_score, width=2, font=('Ubuntu', 24), relief=tk.GROOVE).place(relx=0.61, rely=0.85, anchor=tk.CENTER)
-
-Label(win, text='I challenge you to guess the number', font=("Courier", 25)).place(relx=0.5, rely=0.09, anchor=tk.CENTER)
-
-answer = random.randint(1, 10)  # Generate a random number between 1 and 100
+secret_number = random.randint(1, 10)
 
 attempts = 0
 
 def check_guess():
     global attempts
-    user_guess = int(guess.get())
-
-    if user_guess == answer:
-        hint.set("Congratulations! You guessed it right.")
-    elif user_guess < answer:
-        hint.set("Try a higher number.")
-    else:
-        hint.set("Try a lower number.")
-
     attempts += 1
-    final_score.set(f"Attempts: {attempts}")
+    player_guess = int(guess_entry.get())
 
-    if attempts >= 10:
-        hint.set(f"Game over! The correct answer was {answer}.")
+    if player_guess < secret_number:
+        hint_label.config(text="Too low! Try again.")
+    elif player_guess > secret_number:
+        hint_label.config(text="Too high! Try again.")
+    else:
+        messagebox.showinfo("Congratulations", f"Correct! You guessed it in {attempts} attempts.")
+        win.destroy()
 
-Button(win, text="Submit Guess", command=check_guess, font=("Courier", 24)).place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+win = tk.Tk()
+win.title("Number Guessing Game")
+win.geometry("400x200")
+
+guess_entry = tk.Entry(win, width=10)
+guess_entry.pack(pady=20)
+
+
+check_button = tk.Button(win, text="Check Guess", command=check_guess)
+check_button.pack()
+
+
+hint_label = tk.Label(win, text="I'm thinking of a number between 1 and 100.")
+hint_label.pack()
 
 win.mainloop()
